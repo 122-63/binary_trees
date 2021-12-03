@@ -1,76 +1,67 @@
 #include "binary_trees.h"
 /**
- * equals_height - balance_height
- * @tree: balanced tree
- * Return: A int
+ * binary_tree_is_leaf - Check if a node is a leaf
+ *
+ * @node: Node to check
+ * Return: Always Success
  */
-int equals_height(const binary_tree_t *tree)
+int binary_tree_is_leaf(const binary_tree_t *node)
 {
-	if (tree == NULL)
+	if (node != NULL)
 	{
-		return (0);
+		if (node->left == NULL && node->right == NULL)
+			return (1);
 	}
-	return (1 + (MAX(equals_height(tree->left), equals_height(tree->right))));
+	return (0);
 }
 
 /**
- * binary_tree_balance - function that measures the balance
- * @tree: Tree to be balanced
- * Return: Balanced int
+ * binary_tree_height - find the height of a binary tree
+ *
+ * @tree: Binary Tree
+ * Return: Always Success
  */
-int binary_tree_balance(const binary_tree_t *tree)
+size_t binary_tree_height(const binary_tree_t *tree)
 {
-	if (tree == NULL)
+	size_t left, right;
+
+	if (tree == NULL || (tree->left == NULL && tree->right == NULL))
 	{
 		return (0);
 	}
-	return (equals_height(tree->left) - equals_height(tree->right));
+	left = binary_tree_height(tree->left);
+	right = binary_tree_height(tree->right);
+
+	if (left >= right)
+	{
+		return (1 + left);
+	}
+	return (1 + right);
 }
 
 /**
- * binary_tree_is_full - function that checks if a binary tree is full
- * @tree: Tree to check if is full
- * Return: If tree is NULL return 0
- */
-int binary_tree_is_full(const binary_tree_t *tree)
-{
-	if (tree == NULL)
-	{
-		return (0);
-	}
-	if (tree->left != NULL || tree->right != NULL)
-	{
-		return (binary_tree_is_full(tree->left) * binary_tree_is_full(tree->right));
-	}
-	else
-	{
-		return (1);
-	}
-}
-
-/**
- * binary_tree_is_perfect -  checks if a binary tree is perfect
- * @tree:  a pointer to the root node of the tree to check
- * Return: If tree is NULL, your function must return 0
+ * binary_tree_is_perfect - function that checks if a binary tree is perfect
+ * @tree: pointer to the root node of the tree to check
+ * Return: 1 if is perfect else 0
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-	int is_full = 0;
-	int is_balance = 0;
+	binary_tree_t *left, *right;
 
 	if (tree == NULL)
 	{
 		return (0);
 	}
-	is_full = binary_tree_is_full(tree);
-	is_balance = binary_tree_balance(tree);
-	if (is_balance == 0)
+	left = tree->left;
+	right = tree->right;
+	if (binary_tree_is_leaf(tree))
+		return (1);
+	if (left == NULL || right == NULL)
+		return (0);
+	if (binary_tree_height(left) == binary_tree_height(right))
 	{
-		is_balance = 1;
+		if (binary_tree_is_perfect(left) && binary_tree_is_perfect(right))
+			return (1);
 	}
-	else
-	{
-		is_balance = 0;
-	}
-	return (is_full * is_balance);
+	return (0);
 }
